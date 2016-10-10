@@ -1,63 +1,8 @@
 import React from 'react';
+import NewsData from '../firebase-connection';
 
-import Firebase from 'firebase';
-
-// Initialize Firebase
-var config = {
-	apiKey: "AIzaSyBreVH135DsM13KGuUvjSJVL4H6LZq43Us",
-	authDomain: "test-8d654.firebaseapp.com",
-	databaseURL: "https://test-8d654.firebaseio.com",
-	storageBucket: "test-8d654.appspot.com",
-	messagingSenderId: "101705867127"
-};
-Firebase.initializeApp(config);
-
-
-export class NewList extends React.Component {
-	render() {
-		const _this = this;
-		var newNews = function(item, index) {
-			return (
-				<li key={ index }>
-					<div>{ item.title }  <i>{ item.date }</i></div>
-					<div>
-						{ item.body }
-					</div>
-          <span onClick={ _this.props.archiveItem.bind(null, item['.key']) }
-                style={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}>
-            Archived
-          </span>
-				</li>
-			);
-		};
-		return <ul>{ this.props.newItems.map(newNews) }</ul>;
-
-	}
-}
-
-export class ArchiveListNews extends React.Component {
-	render() {
-		const _this = this;
-		console.log(this.props);
-		var archiveNews = function(item, index) {
-			return (
-				<li key={ index }>
-					<div>{ item.title }  <i>{ item.date }</i></div>
-					<div>
-						{ item.body }
-					</div>
-          <span onClick={ _this.props.removeItem.bind(null, item['.key']) }
-                style={{ color: 'red', marginLeft: '10px', cursor: 'pointer' }}>
-            Remove
-          </span>
-				</li>
-			);
-		};
-		return <ul>{ this.props.archiveItems.map(archiveNews) }</ul>;
-
-	}
-}
-
+import NewListNews from './newListNews.jsx';
+import ArchiveListNews from './archiveListNews.jsx';
 
 export default class News extends React.Component {
 	constructor (props) {
@@ -74,26 +19,22 @@ export default class News extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-
-
-
 	componentWillMount() {
-		this.firebaseRef = Firebase.database().ref('news');
+		this.firebaseRef = NewsData;
 		this.firebaseRef.on('value', (newsList) => {
 			var newItems = [],
 				archiveItems = [];
 			newsList.forEach((newsItem) => {
 				const item = newsItem.val();
 				item['.key'] = newsItem.key;
-				console.log(item);
 				if (!item.archive) {
 					newItems.push(item);
 				} else {
 					archiveItems.push(item);
 				}
 				this.setState({
-					newItems,
-					archiveItems
+					newItems: this.orderByDate(newItems),
+					archiveItems: this.orderByDate(archiveItems)
 				});
 			});
 		});
@@ -101,6 +42,13 @@ export default class News extends React.Component {
 
 	componentWillUnmount() {
 		this.firebaseRef.off();
+	}
+
+	orderByDate(list) {
+		let sortedList = list.sort((a, b) => {
+			return new Date(a.date).getTime() - new Date(b.date).getTime()
+		});
+		return sortedList;
 	}
 
 	onChangeTitle(e) {
@@ -112,12 +60,12 @@ export default class News extends React.Component {
 	}
 
 	removeItem(key) {
-		let firebaseRef = Firebase.database().ref('news');
+		let firebaseRef = NewsData;
 		firebaseRef.child(key).remove();
 	}
 
 	archiveItem(key) {
-		let firebaseRef = Firebase.database().ref('news');
+		let firebaseRef = NewsData;
 		firebaseRef.child(key).update({archive: true});
 
 	}
@@ -139,16 +87,15 @@ export default class News extends React.Component {
 	}
 
 	render() {
-		console.log(this.state);
 		return (
-			<div>
+			<div className="container">
 				<form onSubmit={ this.handleSubmit }>
 					<input placeholder="Type title" onChange={ this.onChangeTitle } value={ this.state.title } />
 					<input placeholder="Type body" onChange={ this.onChangeBody } value={ this.state.body } />
 					<button>{ 'Add news' + (this.state.newItems.length + 1) }</button>
 				</form>
-				<NewList newItems={ this.state.newItems } archiveItem={ this.archiveItem } />
-				<ArchiveListNews archiveItems={ this.state.archiveItems } removeItem={ this.removeItem } />
+				<NewListNews newItems={ this.state.newItems } archiveItem={ this.archiveItem } />
+				<ArchiveListNews archiveItems={ this.orderByDate(this.state.archiveItems) } removeItem={ this.removeItem } />
 			</div>
 		);
 	}

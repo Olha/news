@@ -16,10 +16,17 @@ Firebase.initializeApp(config);
 var db = Firebase.database();
 
 var newsRef = db.ref("news");
-//setInterval(function(){
+
 var initialNews = require("./news.json");
-initialNews.map(function(item, i) {
-	item.date = (new Date(item.date)).toISOString();
-	newsRef.push(item);
-});
-//}, 2000);
+var index = 0;
+function setItemIntoBase() {
+	if (index < initialNews.length) {
+		let item = initialNews[index];
+		item.date = (new Date(item.date)).toISOString();
+		newsRef.push(item);
+		index++;
+	}
+}
+
+setInterval(setItemIntoBase, 2000);
+

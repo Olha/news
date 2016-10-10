@@ -21440,7 +21440,6 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.ArchiveListNews = exports.NewList = undefined;
 
 	var _getPrototypeOf = __webpack_require__(173);
 
@@ -21466,165 +21465,61 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _firebase = __webpack_require__(259);
+	var _firebaseConnection = __webpack_require__(259);
 
-	var _firebase2 = _interopRequireDefault(_firebase);
+	var _firebaseConnection2 = _interopRequireDefault(_firebaseConnection);
+
+	var _newListNews = __webpack_require__(265);
+
+	var _newListNews2 = _interopRequireDefault(_newListNews);
+
+	var _archiveListNews = __webpack_require__(266);
+
+	var _archiveListNews2 = _interopRequireDefault(_archiveListNews);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// Initialize Firebase
-	var config = {
-		apiKey: "AIzaSyBreVH135DsM13KGuUvjSJVL4H6LZq43Us",
-		authDomain: "test-8d654.firebaseapp.com",
-		databaseURL: "https://test-8d654.firebaseio.com",
-		storageBucket: "test-8d654.appspot.com",
-		messagingSenderId: "101705867127"
-	};
-	_firebase2.default.initializeApp(config);
-
-	var NewList = exports.NewList = function (_React$Component) {
-		(0, _inherits3.default)(NewList, _React$Component);
-
-		function NewList() {
-			(0, _classCallCheck3.default)(this, NewList);
-			return (0, _possibleConstructorReturn3.default)(this, (NewList.__proto__ || (0, _getPrototypeOf2.default)(NewList)).apply(this, arguments));
-		}
-
-		(0, _createClass3.default)(NewList, [{
-			key: 'render',
-			value: function render() {
-				var _this = this;
-				var newNews = function newNews(item, index) {
-					return _react2.default.createElement(
-						'li',
-						{ key: index },
-						_react2.default.createElement(
-							'div',
-							null,
-							item.title,
-							'  ',
-							_react2.default.createElement(
-								'i',
-								null,
-								item.date
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							null,
-							item.body
-						),
-						_react2.default.createElement(
-							'span',
-							{ onClick: _this.props.archiveItem.bind(null, item['.key']),
-								style: { color: 'red', marginLeft: '10px', cursor: 'pointer' } },
-							'Archived'
-						)
-					);
-				};
-				return _react2.default.createElement(
-					'ul',
-					null,
-					this.props.newItems.map(newNews)
-				);
-			}
-		}]);
-		return NewList;
-	}(_react2.default.Component);
-
-	var ArchiveListNews = exports.ArchiveListNews = function (_React$Component2) {
-		(0, _inherits3.default)(ArchiveListNews, _React$Component2);
-
-		function ArchiveListNews() {
-			(0, _classCallCheck3.default)(this, ArchiveListNews);
-			return (0, _possibleConstructorReturn3.default)(this, (ArchiveListNews.__proto__ || (0, _getPrototypeOf2.default)(ArchiveListNews)).apply(this, arguments));
-		}
-
-		(0, _createClass3.default)(ArchiveListNews, [{
-			key: 'render',
-			value: function render() {
-				var _this = this;
-				console.log(this.props);
-				var archiveNews = function archiveNews(item, index) {
-					return _react2.default.createElement(
-						'li',
-						{ key: index },
-						_react2.default.createElement(
-							'div',
-							null,
-							item.title,
-							'  ',
-							_react2.default.createElement(
-								'i',
-								null,
-								item.date
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							null,
-							item.body
-						),
-						_react2.default.createElement(
-							'span',
-							{ onClick: _this.props.removeItem.bind(null, item['.key']),
-								style: { color: 'red', marginLeft: '10px', cursor: 'pointer' } },
-							'Remove'
-						)
-					);
-				};
-				return _react2.default.createElement(
-					'ul',
-					null,
-					this.props.archiveItems.map(archiveNews)
-				);
-			}
-		}]);
-		return ArchiveListNews;
-	}(_react2.default.Component);
-
-	var News = function (_React$Component3) {
-		(0, _inherits3.default)(News, _React$Component3);
+	var News = function (_React$Component) {
+		(0, _inherits3.default)(News, _React$Component);
 
 		function News(props) {
 			(0, _classCallCheck3.default)(this, News);
 
-			var _this4 = (0, _possibleConstructorReturn3.default)(this, (News.__proto__ || (0, _getPrototypeOf2.default)(News)).call(this, props));
+			var _this = (0, _possibleConstructorReturn3.default)(this, (News.__proto__ || (0, _getPrototypeOf2.default)(News)).call(this, props));
 
-			_this4.state = {
+			_this.state = {
 				newItems: [],
 				archiveItems: [],
 				title: '',
 				body: ''
 			};
 
-			_this4.onChangeTitle = _this4.onChangeTitle.bind(_this4);
-			_this4.onChangeBody = _this4.onChangeBody.bind(_this4);
-			_this4.handleSubmit = _this4.handleSubmit.bind(_this4);
-			return _this4;
+			_this.onChangeTitle = _this.onChangeTitle.bind(_this);
+			_this.onChangeBody = _this.onChangeBody.bind(_this);
+			_this.handleSubmit = _this.handleSubmit.bind(_this);
+			return _this;
 		}
 
 		(0, _createClass3.default)(News, [{
 			key: 'componentWillMount',
 			value: function componentWillMount() {
-				var _this5 = this;
+				var _this2 = this;
 
-				this.firebaseRef = _firebase2.default.database().ref('news');
+				this.firebaseRef = _firebaseConnection2.default;
 				this.firebaseRef.on('value', function (newsList) {
 					var newItems = [],
 					    archiveItems = [];
 					newsList.forEach(function (newsItem) {
 						var item = newsItem.val();
 						item['.key'] = newsItem.key;
-						console.log(item);
 						if (!item.archive) {
 							newItems.push(item);
 						} else {
 							archiveItems.push(item);
 						}
-						_this5.setState({
-							newItems: newItems,
-							archiveItems: archiveItems
+						_this2.setState({
+							newItems: _this2.orderByDate(newItems),
+							archiveItems: _this2.orderByDate(archiveItems)
 						});
 					});
 				});
@@ -21633,6 +21528,14 @@
 			key: 'componentWillUnmount',
 			value: function componentWillUnmount() {
 				this.firebaseRef.off();
+			}
+		}, {
+			key: 'orderByDate',
+			value: function orderByDate(list) {
+				var sortedList = list.sort(function (a, b) {
+					return new Date(a.date).getTime() - new Date(b.date).getTime();
+				});
+				return sortedList;
 			}
 		}, {
 			key: 'onChangeTitle',
@@ -21647,13 +21550,13 @@
 		}, {
 			key: 'removeItem',
 			value: function removeItem(key) {
-				var firebaseRef = _firebase2.default.database().ref('news');
+				var firebaseRef = _firebaseConnection2.default;
 				firebaseRef.child(key).remove();
 			}
 		}, {
 			key: 'archiveItem',
 			value: function archiveItem(key) {
-				var firebaseRef = _firebase2.default.database().ref('news');
+				var firebaseRef = _firebaseConnection2.default;
 				firebaseRef.child(key).update({ archive: true });
 			}
 		}, {
@@ -21675,10 +21578,9 @@
 		}, {
 			key: 'render',
 			value: function render() {
-				console.log(this.state);
 				return _react2.default.createElement(
 					'div',
-					null,
+					{ className: 'container' },
 					_react2.default.createElement(
 						'form',
 						{ onSubmit: this.handleSubmit },
@@ -21690,8 +21592,8 @@
 							'Add news' + (this.state.newItems.length + 1)
 						)
 					),
-					_react2.default.createElement(NewList, { newItems: this.state.newItems, archiveItem: this.archiveItem }),
-					_react2.default.createElement(ArchiveListNews, { archiveItems: this.state.archiveItems, removeItem: this.removeItem })
+					_react2.default.createElement(_newListNews2.default, { newItems: this.state.newItems, archiveItem: this.archiveItem }),
+					_react2.default.createElement(_archiveListNews2.default, { archiveItems: this.orderByDate(this.state.archiveItems), removeItem: this.removeItem })
 				);
 			}
 		}]);
@@ -23234,6 +23136,37 @@
 /* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _firebase = __webpack_require__(260);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Initialize Firebase on frontend
+	var config = {
+		apiKey: "AIzaSyBreVH135DsM13KGuUvjSJVL4H6LZq43Us",
+		authDomain: "test-8d654.firebaseapp.com",
+		databaseURL: "https://test-8d654.firebaseio.com",
+		storageBucket: "test-8d654.appspot.com",
+		messagingSenderId: "101705867127"
+	}; /**
+	    * Created by olha on 10.10.16.
+	    */
+
+	_firebase2.default.initializeApp(config);
+	var NewsData = _firebase2.default.database().ref('news');
+	exports.default = NewsData;
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/**
 	 *  Firebase libraries for browser - npm package.
 	 *
@@ -23241,15 +23174,15 @@
 	 *
 	 *   firebase = require('firebase');
 	 */
-	var firebase = __webpack_require__(260);
-	__webpack_require__(261);
+	var firebase = __webpack_require__(261);
 	__webpack_require__(262);
 	__webpack_require__(263);
+	__webpack_require__(264);
 	module.exports = firebase;
 
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*! @license Firebase v3.4.1
@@ -23286,10 +23219,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var firebase = __webpack_require__(260);
+	var firebase = __webpack_require__(261);
 	/*! @license Firebase v3.4.1
 	    Build: 3.4.1-rc.2
 	    Terms: https://developers.google.com/terms */
@@ -23514,10 +23447,10 @@
 
 
 /***/ },
-/* 262 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var firebase = __webpack_require__(260);
+	var firebase = __webpack_require__(261);
 	/*! @license Firebase v3.4.1
 	    Build: 3.4.1-rc.2
 	    Terms: https://developers.google.com/terms */
@@ -23766,10 +23699,10 @@
 
 
 /***/ },
-/* 263 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var firebase = __webpack_require__(260);
+	var firebase = __webpack_require__(261);
 	/*! @license Firebase v3.4.1
 	    Build: 3.4.1-rc.2
 	    Terms: https://developers.google.com/terms */
@@ -23876,6 +23809,199 @@
 	(function(){function a(a){return new Y(a)}var b={TaskState:va,TaskEvent:ua,StringFormat:Ua,Storage:Y,Reference:X};if("undefined"!==typeof firebase)firebase.INTERNAL.registerService("storage",a,b);else throw Error("Cannot install Firebase Storage - be sure to load firebase-app.js first.");})();})();
 	module.exports = firebase.storage;
 
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(173);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(199);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(200);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(204);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(251);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var NewListNews = function (_React$Component) {
+		(0, _inherits3.default)(NewListNews, _React$Component);
+
+		function NewListNews() {
+			(0, _classCallCheck3.default)(this, NewListNews);
+			return (0, _possibleConstructorReturn3.default)(this, (NewListNews.__proto__ || (0, _getPrototypeOf2.default)(NewListNews)).apply(this, arguments));
+		}
+
+		(0, _createClass3.default)(NewListNews, [{
+			key: 'render',
+			value: function render() {
+				var _this = this;
+				var newNews = function newNews(item, index) {
+					return _react2.default.createElement(
+						'li',
+						{ key: index },
+						_react2.default.createElement(
+							'div',
+							null,
+							item.title,
+							'  ',
+							_react2.default.createElement(
+								'i',
+								null,
+								item.date
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							null,
+							item.body
+						),
+						_react2.default.createElement(
+							'span',
+							{ className: 'remove btn', onClick: _this.props.archiveItem.bind(null, item['.key']) },
+							'Archived'
+						)
+					);
+				};
+				return _react2.default.createElement(
+					'div',
+					{ className: 'wrapper-list' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'title' },
+						'New news'
+					),
+					_react2.default.createElement(
+						'ul',
+						null,
+						this.props.newItems.map(newNews)
+					)
+				);
+			}
+		}]);
+		return NewListNews;
+	}(_react2.default.Component);
+
+	exports.default = NewListNews;
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(173);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(199);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(200);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(204);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(251);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ArchiveListNews = function (_React$Component) {
+		(0, _inherits3.default)(ArchiveListNews, _React$Component);
+
+		function ArchiveListNews() {
+			(0, _classCallCheck3.default)(this, ArchiveListNews);
+			return (0, _possibleConstructorReturn3.default)(this, (ArchiveListNews.__proto__ || (0, _getPrototypeOf2.default)(ArchiveListNews)).apply(this, arguments));
+		}
+
+		(0, _createClass3.default)(ArchiveListNews, [{
+			key: 'render',
+			value: function render() {
+				var _this = this;
+				var archiveNews = function archiveNews(item, index) {
+					return _react2.default.createElement(
+						'li',
+						{ key: index },
+						_react2.default.createElement(
+							'div',
+							null,
+							item.title,
+							'  ',
+							_react2.default.createElement(
+								'i',
+								null,
+								item.date
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							null,
+							item.body
+						),
+						_react2.default.createElement(
+							'span',
+							{ className: 'remove btn', onClick: _this.props.removeItem.bind(null, item['.key']) },
+							'Remove'
+						)
+					);
+				};
+				return _react2.default.createElement(
+					'div',
+					{ className: 'wrapper-list' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'title archive' },
+						'New news'
+					),
+					_react2.default.createElement(
+						'ul',
+						null,
+						this.props.archiveItems.map(archiveNews)
+					),
+					';'
+				);
+			}
+		}]);
+		return ArchiveListNews;
+	}(_react2.default.Component);
+
+	exports.default = ArchiveListNews;
 
 /***/ }
 /******/ ]);

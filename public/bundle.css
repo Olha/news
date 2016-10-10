@@ -1,0 +1,116 @@
+html,
+button,
+input,
+select,
+textarea {
+    color: #222;
+}
+
+html {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-smooth: always;
+}
+
+body {
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+img {
+    vertical-align: middle;
+}
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input:not([type=radio]),
+input:not([type=checkbox]),
+textarea,
+select {
+    border-radius: 0;
+    appearance: none;
+}
+
+/* ==========================================================================
+  Author's custom styles
+  ========================================================================== */
+
+.container {
+    width: 700px;
+    font-size: 14px;
+    margin: 20px auto;
+}
+
+.wrapper-list {
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.title {
+    color: green;
+    font-size: 16px;
+}
+
+.title.archive {
+    color: yellow;
+    font-size: 16px;
+}
+
+.btn {
+    marginLeft: 10px;
+    cursor: pointer
+}
+
+.remove {
+    color: red;
+}
+
+.archive {
+    color: blueviolet;
+}
+
+
+
+/* ==========================================================================
+  Helper classes
+  ========================================================================== */
+
+.invisible {
+    visibility: hidden;
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: "";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.non-selectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
